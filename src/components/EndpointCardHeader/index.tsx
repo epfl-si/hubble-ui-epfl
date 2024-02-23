@@ -30,6 +30,7 @@ export const EndpointCardHeader = memo(function EndpointCardHeader(props: Props)
         <div className={css.headings}>
           <div className={titleClassName}>{card.caption}</div>
           {showNamespace && <div className={css.subtitle}>{card.namespace}</div>}
+          <div className="button">⊕</div>
         </div>
       </div>
     </div>

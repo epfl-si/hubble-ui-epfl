@@ -19,68 +19,42 @@ See [Hubble Getting Started Guide](https://docs.cilium.io/en/stable/gettingstart
 
 ## 🛠 Development
 
-### Backend
+### Frontend and Backend on Developer Workstation
 
-If you want to point the frontend to a backend deployed in Minikube, simply create a port forward.
+The following procedure lets Hubble UI connect to an already existing Hubble relay instance in Kubernetes / OpenShift. It requires running your own backend locally, which in turn requires the capability to build Go programs on your workstation.
 
-```shell
-kubectl port-forward -n kube-system deployment/hubble-ui 8081
-```
-
-To make changes to the Go backend, there are additional steps.
+ℹ️  Running the front-end alone to connect to the backend in OpenShift is not supported (for now), as it would require setting up a reverse proxy to bypass CORS issues.
 
 1. Go to the 📁 `backend` directory and execute `./ctl.sh`.
 
    ```shell
-   cd ./backend
-   ./ctl.sh run
+   cd backend
+   env CORS_ENABLED=1 ./ctl.sh run
    ```
 
    Wait until the build and server are running.
 
-2. In a separate terminal, enter the 📁 `server` directory containing the Envoy config.
+2. In a separate terminal, run a port forward to Hubble Relay.
 
    ```shell
-   cd ./server
+   kubectl port-forward -n cilium-system deployment/hubble-relay 50051:4245
    ```
-
-   Assuming Envoy has already been installed, execute:
-
+   
+3. In yet another separate terminal, run the front-end.
    ```shell
-   envoy -c ./envoy.yaml
+   npm install
+   npm run watch
    ```
 
-3. In a separate terminal, run a port forward to Hubble Relay.
+4. Browse [http://localhost:8080](http://localhost:8080)
 
-   ```shell
-   kubectl port-forward -n kube-system deployment/hubble-relay 50051:4245
-   ```
-
-#### Docker 🐳
+### Docker 🐳
 
 Build the backend Docker image:
 
 ```shell
 make hubble-ui-backend
 ```
-
-### Frontend
-
-1. Install dependencies.
-
-```shell
-npm install
-```
-
-2. Start the development server.
-
-```shell
-npm run watch
-```
-
-3. Open [http://localhost:8080](http://localhost:8080)
-
-#### Docker 🐳
 
 Build the frontend Docker image:
 

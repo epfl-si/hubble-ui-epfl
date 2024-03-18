@@ -41,6 +41,10 @@ const run = async () => {
     customProtocolRequestTimeout: 3000,
     customProtocolMessagesInJSON: env.isDev,
     customProtocolCORSEnabled: true,
+    customProtocolBearerToken() {
+      const hash = window.location.hash;
+      return hash?.startsWith("#") ? hash.substring(1) : "XXX-bear-minimum";
+    }
   });
 
   const router = new Router(env.isTesting ? RouterKind.Memory : RouterKind.Browser, dataLayer);

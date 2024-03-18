@@ -30,6 +30,7 @@ export type BuildOptions = {
   customProtocolRequestTimeout: number;
   customProtocolMessagesInJSON: boolean;
   customProtocolCORSEnabled: boolean;
+  customProtocolBearerToken?: () => string;
 };
 
 export class DataLayer extends EventEmitter<Handlers> {
@@ -50,6 +51,11 @@ export class DataLayer extends EventEmitter<Handlers> {
         const search = qs.startsWith('?') ? qs.slice(1) : qs;
 
         h.append(DataLayer.QueryParamsHeaderName, search);
+
+        const token = opts.customProtocolBearerToken?.();
+        if (token) {
+          h.append("Authorization", `Bearer ${token}`);
+        }
       }),
       useJSON: opts.customProtocolMessagesInJSON,
     });

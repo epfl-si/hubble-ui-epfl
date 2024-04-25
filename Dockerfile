@@ -31,5 +31,7 @@ RUN npm run build
 FROM docker.io/nginxinc/nginx-unprivileged:1.25.4-alpine3.18-slim@sha256:5554d7eb856d56dd54f278c20ed94c7342e408203ef1787b8dee6cbb82809a61
 USER root
 RUN apk upgrade --no-cache
+RUN awk '/^ *root / && !done { gsub( /\/usr\/share\/nginx\/html/, "/app"); done=1;}; 1' /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf.patched \
+  && mv /etc/nginx/conf.d/default.conf.patched /etc/nginx/conf.d/default.conf
 USER 101
 COPY --from=stage1 /app/server/public /app

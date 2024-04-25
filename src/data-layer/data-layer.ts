@@ -10,8 +10,6 @@ import { DataMode, TransferState } from '~/domain/interactions';
 import { FiltersDiff } from '~/domain/filtering';
 import { setupDebugProp } from '~/domain/misc';
 
-import { fn } from '~/utils';
-
 import { StorageParameters, Options } from './common';
 import { Controls } from './controls';
 import { ServiceMap } from './service-map';
@@ -46,7 +44,7 @@ export class DataLayer extends EventEmitter<Handlers> {
       requestTimeout: opts.customProtocolRequestTimeout,
       cors: opts.customProtocolCORSEnabled,
       corsHeaders: [],
-      headersMutator: fn.once(h => {
+      headersMutator: h => {
         const qs = window.location.search;
         const search = qs.startsWith('?') ? qs.slice(1) : qs;
 
@@ -56,7 +54,7 @@ export class DataLayer extends EventEmitter<Handlers> {
         if (token) {
           h.append("Authorization", `Bearer ${token}`);
         }
-      }),
+      },
       useJSON: opts.customProtocolMessagesInJSON,
     });
 

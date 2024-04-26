@@ -19,9 +19,22 @@ See [Hubble Getting Started Guide](https://docs.cilium.io/en/stable/gettingstart
 
 ## 🛠 Development
 
+
+### Local Frontend, In-Cluster Backend
+
+💡 This setup assumes that the UI backend (w/ bearer token access control) is available at the URL stored under `API_PROXY_URL` in `.env.fsd`; and therefore doesn't require Kubernetes port forwarding into OpenShift.
+
+1. Run the front-end like this:
+   ```shell
+   npm install
+   env DOTENV_CONFIG_PATH=.env.fsd npm run dev
+   ```
+
+2. Browse [http://localhost:8080](http://localhost:8080)
+
 ### Local Frontend and Backend
 
-The following procedure lets Hubble UI connect to an already existing Hubble relay instance in Kubernetes / OpenShift. It requires running your own backend locally, which in turn requires the capability to build Go programs on your workstation.
+⚠ This procedure is deprecated for two reasons: it requires the ability to compile and run Go code on your workstation; and it doesn't let one test bearer token authentication.
 
 1. Go to the 📁 `backend` directory and execute `./ctl.sh`.
 
@@ -39,22 +52,6 @@ The following procedure lets Hubble UI connect to an already existing Hubble rel
    ```
 
 3. In yet another separate terminal, run the front-end:
-   ```shell
-   npm install
-   npm run dev
-   ```
-
-4. Browse [http://localhost:8080](http://localhost:8080)
-
-### Local Frontend, In-Cluster Backend
-
-2. Run a port forward to the Hubble UI back-end:
-
-   ```shell
-   kubectl port-forward -n hubble service/hubble-ui-epfl 8090:81
-   ```
-   
-3. In a separate terminal, run the front-end:
    ```shell
    npm install
    npm run dev

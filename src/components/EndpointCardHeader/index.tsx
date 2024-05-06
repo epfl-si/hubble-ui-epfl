@@ -8,6 +8,8 @@ import { EndpointLogo } from './EndpointLogo';
 import * as e2e from '~e2e/client';
 import css from './styles.scss';
 
+import { sendEventToParentWindow } from "~/iframe-api";
+
 export interface Props {
   card: ServiceCard;
   currentNamespace?: string | null;
@@ -30,7 +32,14 @@ export const EndpointCardHeader = memo(function EndpointCardHeader(props: Props)
         <div className={css.headings}>
           <div className={titleClassName}>{card.caption}</div>
           {showNamespace && <div className={css.subtitle}>{card.namespace}</div>}
-          <div className={css.button}>⊕</div>
+          <button onClick={(e) => {
+            e.stopPropagation();
+            sendEventToParentWindow({
+              kind: "endpoint-card-clicked-⚙️",
+              namespace: card.namespace || undefined,
+              labels: card.labels
+            });
+          }} className={css.button}>⚙️</button>
         </div>
       </div>
     </div>

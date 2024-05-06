@@ -16,7 +16,7 @@ function HubbleTestUI () {
   const [eventLog, setEventLog] = useState<Array<IframeReceivedMessage>>([]);
   useEffect(() => {
     return onReceiveMessageFromIframe((event) => {
-      setEventLog([...eventLog, event]);
+      setEventLog((eventLog) => [...eventLog, event]);
     });
   }, []);
 

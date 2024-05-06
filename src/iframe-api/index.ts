@@ -11,7 +11,11 @@ type BearerToken = {
   token: string
 }
 
-export type SentMessage = EndpointCardClicked;
+export type SentMessage = BearerTokenRequest | EndpointCardClicked;
+
+type BearerTokenRequest = {
+  kind: "bearer-token-request"
+}
 
 type EndpointCardClicked = {
   kind: "endpoint-card-clicked-⚙️",

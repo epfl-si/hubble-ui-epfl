@@ -47,7 +47,21 @@ function TopControls () {
 
 function LeftControls (props : {log : Array<IframeReceivedMessage>}) {
   const { log } = props;
-  return <ul>{ log.map((event, index) => <li key={ index }><code>{JSON.stringify(event)}</code></li> ) }</ul>;
+
+  function rle<T>(things: Array<T>) : Array<{ thing: T, count: number }> {
+    const accum : Array<{ thing: T, count: number}> = [];
+    for (const thing of things) {
+      if (accum.length && JSON.stringify(accum[accum.length - 1].thing) === JSON.stringify(thing)) {
+        accum[accum.length - 1].count = accum[accum.length - 1].count + 1;
+      } else {
+        accum.push({ thing, count: 1 });
+      }
+    }
+    return accum;
+  }
+
+  const logSummary = rle(log);
+  return <ul>{ logSummary.map(({ thing, count }, index) => <li key={ index }><code>{JSON.stringify(thing)}</code> { count > 1 ? <span>× { count }</span> : <></>} </li> ) }</ul>;
 }
 
 function sendMessageToIframe (message : IframeSentMessage) {

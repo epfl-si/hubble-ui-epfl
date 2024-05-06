@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client';
 import Split from 'react-split';
 import "./split.css";
 import { ReceivedMessage as IframeSentMessage,
-  SentMessage as IframeReceivedMessage } from "../../src/iframe-api";
+  SentMessage as IframeReceivedMessage,
+  onParentIframeMessage
+} from "../../src/iframe-api";
 
 const div = document.getElementById("hubble-ui-iframed") as Element;
 createRoot(div).render(<React.StrictMode>

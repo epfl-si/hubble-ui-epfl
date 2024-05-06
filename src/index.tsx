@@ -7,7 +7,7 @@ import { DataLayer } from '~/data-layer';
 import { Router, RouterKind, RouterProvider } from '~/router';
 import { UILayer } from '~/ui-layer';
 import { Application, ApplicationProvider } from '~/application';
-import { ReceivedMessage } from "~/iframe-api";
+import { ReceivedMessage, onParentIframeMessage } from "~/iframe-api";
 
 import { e2e } from '~e2e/client';
 
@@ -32,18 +32,6 @@ const buildAPIUrl = (env: Environment): string => {
 };
 
 const auth : { token ?: string } = {};
-
-function onParentIframeMessage (handler : (message : ReceivedMessage) => void) {
-  window.addEventListener(
-    "message",
-    (event) => {
-      if (event.source !== window.parent) {
-        console.error("OMG H4XX !!1!");
-        return;
-      }
-      handler(event.data);
-    });
-}
 
 const gotFirstToken = new Promise<void>((resolve, reject) => {
   onParentIframeMessage((message : ReceivedMessage) => {

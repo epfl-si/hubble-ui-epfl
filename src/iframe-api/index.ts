@@ -22,3 +22,20 @@ type EndpointCardClicked = {
 export function sendEventToParentWindow (event : SentMessage, targetDomain ?: string) {
   window.parent.postMessage(event, targetDomain || "*");
 }
+
+/**
+ * @return A void function that unregisters the handler when called.
+ */
+export function onParentIframeMessage (handler : (message : ReceivedMessage) => void)
+: () => void {
+  function processEvent (event : MessageEvent) {
+    if (event.source !== window.parent) {
+      console.error("OMG H4XX !!1!");
+      return;
+    }
+    handler(event.data);
+  }
+  window.addEventListener("message", processEvent);
+
+  return () => window.removeEventListener("message", processEvent);
+}

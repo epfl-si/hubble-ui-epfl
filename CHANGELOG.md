@@ -1,5 +1,10 @@
 💡 This change log and the version numbering scheme are authoritative only for the developments made by EPFL, in the fork hosted at https://github.com/epfl-si/hubble-ui-epfl
 
+# Version epfl-0.2.0
+
+- Synchronous messaging to request a token from parent
+- Bug fixes
+
 # Version epfl-0.1.0
 
 - Works in a sandboxed iframe

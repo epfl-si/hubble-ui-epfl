@@ -26,14 +26,8 @@ const buildAPIUrl = (env: Environment): string => {
 
   // NOTE: Do not edit those `process.env.VAR_NAME` variable accesses
   // because they only work if you have such a direct call for them.
-  const schemaRaw = process.env.API_SCHEMA || document.location.protocol || 'http';
-  const schema = schemaRaw.endsWith(':') ? schemaRaw : `${schemaRaw}:`;
-  const hostname = process.env.API_HOST || document.location.hostname;
-  const port = process.env.API_PORT || document.location.port;
   const path = process.env.API_PATH || 'api';
-  const slashedPath = path?.startsWith('/') ? path : `/${path}`;
-
-  return `${schema}//${hostname}${port ? `:${port}` : ''}${slashedPath}`;
+  return path?.startsWith('/') ? path : `/${path}`;
 };
 
 const run = async () => {

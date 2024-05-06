@@ -158,6 +158,12 @@ module.exports = {
       path: `.env${isProduction ? '.production' : '.development'}`,
     }),
     new HtmlWebpackPlugin({
+      filename: path.resolve(__dirname, `./server/public/iframe-parent.html`),
+      template: path.resolve(__dirname, `./devsupport/iframe-parent/iframe-parent.html`),
+      chunks: [],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
       filename: path.resolve(__dirname, `./server/public/index.html`),
       template: path.resolve(__dirname, `./src/index.html`),
       chunksSortMode: 'auto',

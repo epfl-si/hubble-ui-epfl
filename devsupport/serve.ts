@@ -8,6 +8,14 @@ const apiBaseURL = process.env.API_PROXY_URL;
  
 const app = express();
 
+app.get("/", (req, res, next) => {
+  if (req.header("Referer")) {
+    next();
+  } else {
+    res.redirect("/iframe-parent.html");
+  }
+});
+
 // Logging
 app.use((req, res, next) => {
   res.on("finish", () => {

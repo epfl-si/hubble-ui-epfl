@@ -7,7 +7,7 @@ import { DataLayer } from '~/data-layer';
 import { Router, RouterKind, RouterProvider } from '~/router';
 import { UILayer } from '~/ui-layer';
 import { Application, ApplicationProvider } from '~/application';
-import { ReceivedMessage, onParentIframeMessage } from "~/iframe-api";
+import { ReceivedMessage, sendEventToParentWindow, onParentIframeMessage } from "~/iframe-api";
 
 import { e2e } from '~e2e/client';
 
@@ -31,23 +31,39 @@ const buildAPIUrl = (env: Environment): string => {
   return path?.startsWith('/') ? path : `/${path}`;
 };
 
-const auth : { token ?: string } = {};
+type Auth = { token ?: string; };
 
-const gotFirstToken = new Promise<void>((resolve, reject) => {
-  onParentIframeMessage((message : ReceivedMessage) => {
-    if (message.kind === "token") {
-      auth.token = message.token;
+function obtainToken (auth : Auth) {
+  return new Promise<void>((resolve, reject) => {
+    const requestTokenInterval = setInterval(
+      () => {
+        sendEventToParentWindow({ kind: "bearer-token-request" });
+        console.log(".");
+      },
+      2000);
+
+    const stopReceiving = onParentIframeMessage((message : ReceivedMessage) => {
+      if (message.kind === "token") {
+        auth.token = message.token;
+        cleanupAndResolve();
+      }
+    });
+
+    function cleanupAndResolve () {
+      stopReceiving();
+      clearInterval(requestTokenInterval);
       resolve();
     }
   });
-});
+}
 
 const run = async () => {
   const env = Environment.new();
   const store = new Store();
 
   document.getElementById("app")!.innerHTML = "Waiting for bearer token...";
-  await gotFirstToken;
+  const auth : Auth = {};
+  await obtainToken(auth);
 
   const apiUrl = buildAPIUrl(env);
   const dataLayer = DataLayer.new({

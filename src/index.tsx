@@ -7,6 +7,7 @@ import { DataLayer } from '~/data-layer';
 import { Router, RouterKind, RouterProvider } from '~/router';
 import { UILayer } from '~/ui-layer';
 import { Application, ApplicationProvider } from '~/application';
+import { ReceivedMessage } from "~/iframe-api";
 
 import { e2e } from '~e2e/client';
 
@@ -30,9 +31,35 @@ const buildAPIUrl = (env: Environment): string => {
   return path?.startsWith('/') ? path : `/${path}`;
 };
 
+const auth : { token ?: string } = {};
+
+function onParentIframeMessage (handler : (message : ReceivedMessage) => void) {
+  window.addEventListener(
+    "message",
+    (event) => {
+      if (event.source !== window.parent) {
+        console.error("OMG H4XX !!1!");
+        return;
+      }
+      handler(event.data);
+    });
+}
+
+const gotFirstToken = new Promise<void>((resolve, reject) => {
+  onParentIframeMessage((message : ReceivedMessage) => {
+    if (message.kind === "token") {
+      auth.token = message.token;
+      resolve();
+    }
+  });
+});
+
 const run = async () => {
   const env = Environment.new();
   const store = new Store();
+
+  document.getElementById("app")!.innerHTML = "Waiting for bearer token...";
+  await gotFirstToken;
 
   const apiUrl = buildAPIUrl(env);
   const dataLayer = DataLayer.new({
@@ -41,10 +68,7 @@ const run = async () => {
     customProtocolRequestTimeout: 3000,
     customProtocolMessagesInJSON: env.isDev,
     customProtocolCORSEnabled: true,
-    customProtocolBearerToken() {
-      const hash = window.location.hash;
-      return hash?.startsWith("#") ? hash.substring(1) : "XXX-bear-minimum";
-    }
+    customProtocolBearerToken: () => auth.token as string
   });
 
   const router = new Router(env.isTesting ? RouterKind.Memory : RouterKind.Browser, dataLayer);

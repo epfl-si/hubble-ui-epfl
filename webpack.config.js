@@ -77,7 +77,10 @@ const stylesLoaders = ({ enableSass, enableModules }) => {
 
 module.exports = {
   target: 'web',
-  entry: path.resolve(__dirname, './src/index.tsx'),
+  entry: {
+    main: path.resolve(__dirname, './src/index.tsx'),
+    iframe_parent: path.resolve(__dirname, './devsupport/iframe-parent/iframe-parent.tsx'),
+  },
   mode: isProduction ? 'production' : 'development',
   watch: isDevelopment,
   devtool: isProduction ? 'source-map' : 'inline-source-map',
@@ -160,12 +163,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: path.resolve(__dirname, `./server/public/iframe-parent.html`),
       template: path.resolve(__dirname, `./devsupport/iframe-parent/iframe-parent.html`),
-      chunks: [],
+      chunks: ["iframe_parent"],
       minify: true,
     }),
     new HtmlWebpackPlugin({
       filename: path.resolve(__dirname, `./server/public/index.html`),
       template: path.resolve(__dirname, `./src/index.html`),
+      chunks: ["main"],
       chunksSortMode: 'auto',
       minify: true,
     }),

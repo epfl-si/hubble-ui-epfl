@@ -9,6 +9,16 @@ type BearerToken = {
   token: string
 }
 
+export type SentMessage = BearerTokenRequest;
+
+type BearerTokenRequest = {
+  kind: "bearer-token-request"
+}
+
+export function sendEventToParentWindow (event : SentMessage, targetDomain ?: string) {
+  window.parent.postMessage(event, targetDomain || "*");
+}
+
 /**
  * @return A void function that unregisters the handler when called.
  */

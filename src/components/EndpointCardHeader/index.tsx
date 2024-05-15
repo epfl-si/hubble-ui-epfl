@@ -32,14 +32,16 @@ export const EndpointCardHeader = memo(function EndpointCardHeader(props: Props)
         <div className={css.headings}>
           <div className={titleClassName}>{card.caption}</div>
           {showNamespace && <div className={css.subtitle}>{card.namespace}</div>}
-          <button onClick={(e) => {
-            e.stopPropagation();
-            sendEventToParentWindow({
-              kind: "endpoint-card-clicked-⚙️",
-              namespace: card.namespace || undefined,
-              labels: card.labels
-            });
-          }} className={css.button}>⚙️</button>
+          { isCardClicky(card) ?
+              <button onClick={(e) => {
+                e.stopPropagation();
+                sendEventToParentWindow({
+                  kind: "endpoint-card-clicked-⚙️",
+                  namespace: card.namespace || undefined,
+                  labels: card.labels
+                });
+              }} className={css.button}>⚙️</button> :
+            <></> }
         </div>
       </div>
     </div>
@@ -82,3 +84,10 @@ const PolicyInfo = memo(function PolicyProps(props: PolicyProps) {
     </div>
   );
 });
+
+function isCardClicky(card : ServiceCard) {
+  for (let kv of card.labels) {
+    if (kv["key"] === "reserved:world") return false;
+  }
+  return true;
+}

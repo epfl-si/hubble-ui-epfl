@@ -12,6 +12,7 @@ import { VerdictFilterDropdown } from './VerdictFilterDropdown';
 import { VisualFiltersDropdown } from './VisualFiltersDropdown';
 import { NamespaceSelectorDropdown } from './NamespaceSelectorDropdown';
 import { ConnectionIndicator } from './ConnectionIndicator';
+import { MashupNotifyButton } from './MashupNotifyButton';
 
 import { e2e } from '~e2e/client';
 import css from './styles.scss';
@@ -44,6 +45,7 @@ export const TopBar = observer(function TopBar(props: Props) {
       <div className={css.spacer} />
       <div className={css.spacer} />
       <FlowsFilterInput filters={props.flowFilters} onChange={props.onChangeFlowFilters} />
+      <MashupNotifyButton filters={props.flowFilters} namespace={props.currentNamespace} />
       <div className={css.spacer} />
       <VerdictFilterDropdown verdict={props.selectedVerdict} onSelect={props.onVerdictChange} />
       <div className={css.border} />

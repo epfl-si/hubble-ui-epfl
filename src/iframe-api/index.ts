@@ -9,10 +9,24 @@ type BearerToken = {
   token: string
 }
 
-export type SentMessage = BearerTokenRequest;
+export type SentMessage = BearerTokenRequest | HubbleUIViewAttentionRequest;
 
 type BearerTokenRequest = {
   kind: "bearer-token-request"
+}
+
+type HubbleUIViewAttentionRequest = {
+  kind: "hubble-ui-view-attention-request",
+  namespace: string | undefined,
+  filters: HubbleUIViewFilter[]
+}
+
+type HubbleUIViewFilter = {
+  direction: string,
+  kind: string,
+  meta?: string,
+  negative: boolean,
+  query: string
 }
 
 export function sendEventToParentWindow (event : SentMessage, targetDomain ?: string) {
